@@ -3,11 +3,11 @@ import time
  
 GPIO.setmode(GPIO.BCM)
  
-port = 14
+port = 15
 GPIO.setup(port, GPIO.OUT)
 
 #Turn on
-GPIO.output(port,0)
+GPIO.output(port,1)
 time.sleep(3)
 
 #Turn off
