@@ -4,6 +4,7 @@ from sensors.cpu_temp import *
 from sensors.rpio_sensors import *
 from sensors.humidity_sensor import *
 import requests
+import time
 
 #Humidity Sensor Configs
 HUMIDITY_SENSOR = 15
@@ -21,6 +22,8 @@ def get_all_readings():
 url = 'https://cohen-garden.herokuapp.com/api/readings'
 
 
-    
-r = requests.post(url, json = get_all_readings())
-print(r.status_code)
+while True:
+    read = get_all_readings()
+    print(read)
+    r = requests.post(url, json = read)
+    print(r.status_code)
