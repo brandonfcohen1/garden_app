@@ -1,27 +1,46 @@
-# Data to serve with our API
-READINGS = {
-    "1": {
-            "baro_temp":76,
-            "baro_pressure":30.5,
-            "cpu_temp":110,
-            "humid_temp":75,
-            "humid_humid":50,
-            "light":0,
-            "time":100,
-        }
-}
+from flask import (
+    make_response,
+    abort,
+)
+from config import db
+from models import (
+    Readings,
+    ReadingsSchema
+)
 
-
-def read():
+def read_all():
     """
-    This function responds to a request for /api/people
+    This function responds to a request for /api/readings
     with the complete lists of people
 
-    :return:        sorted list of people
+    :return:        json string of list of people
     """
     # Create the list of people from our data
-    return [READINGS[key] for key in sorted(READINGS.keys())]
+    readings = Readings.query \
+        .order_by(Readings.time) \
+        .all()
+
+    # Serialize the data for the response
+    readings_schema = ReadingsSchema(many=True)
+    return readings_schema.dump(readings)
 
 
-def post():
-    return "hello, world!"
+def create(readings):
+    """
+    This function creates a new reading in the readings structure
+    based on the passed-in readings data
+
+    :param person:  reading to create in readings structure
+    :return:        201 on success
+    """
+
+    # Create a person instance using the schema and the passed-in person
+    schema = ReadingsSchema()
+    new_reading = schema.load(readings, session=db.session)
+
+    # Add the person to the database
+    db.session.add(new_reading)
+    db.session.commit()
+
+    # Serialize and return the newly created person in the response
+    return schema.dump(new_reading), 201

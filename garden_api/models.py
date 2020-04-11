@@ -11,3 +11,9 @@ class Readings(db.Model):
     humid_humid = db.Column(db.Float)
     light = db.Column(db.Integer)
     time = db.Column(db.Float)
+
+
+class ReadingsSchema(ma.ModelSchema):
+    class Meta:
+        model = Readings
+        sqla_session = db.session

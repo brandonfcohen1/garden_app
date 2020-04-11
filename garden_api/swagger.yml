@@ -14,7 +14,7 @@ basePath: "/api"
 paths:
   /readings:
     get:
-      operationId: "readings.read"
+      operationId: "readings.read_all"
       tags:
         - "Readings"
       summary: "The readings data structure supported by the server application"
@@ -42,7 +42,7 @@ paths:
                   type: "number"
 
     post:
-      operationId: "readings.post"
+      operationId: "readings.create"
       tags:
         - "Readings"
       summary: "The readings data structure supported by the server application"
