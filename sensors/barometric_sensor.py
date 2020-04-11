@@ -130,7 +130,7 @@ def readBmp180(addr=DEVICE):
 #if __name__=="__main__":
 #   main()
 
-def read_sensor():
+def read_barometric():
     (deg_C, mbar) = readBmp180()
     deg_F = deg_C*(9.0/5.0)+32.0
     mmhg = mbar * 0.02953

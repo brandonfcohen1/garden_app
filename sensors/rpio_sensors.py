@@ -1,18 +1,18 @@
 import RPi.GPIO as GPIO
 
-
 #GPIO Ports
-#TOUCH_SENSOR = 15
-#RELAY_SWITCH = 14
 LIGHT_SENSOR = 14
 
+#GPIO Setup
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LIGHT_SENSOR, GPIO.IN)
 
-#Initialize all settings
-def initialize():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(LIGHT_SENSOR, GPIO.IN)
 
-    
+
+def read_light():
+    return(GPIO.input(LIGHT_SENSOR))
+
+
 
 #
 ##Touch Sensor
@@ -30,8 +30,5 @@ def initialize():
 #    GPIO.output(RELAY_SWITCH,1)
 
 
-#Light Sensor
-def read_light(port_light):
-    return(GPIO.input(port_light))
 
 
