@@ -21,3 +21,7 @@ def read():
     """
     # Create the list of people from our data
     return [READINGS[key] for key in sorted(READINGS.keys())]
+
+
+def post():
+    return "hello, world!"

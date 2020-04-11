@@ -40,3 +40,35 @@ paths:
                   type: "integer"
                 time:
                   type: "number"
+
+    post:
+      operationId: "readings.post"
+      tags:
+        - "Readings"
+      summary: "The readings data structure supported by the server application"
+      description: "Get the list of readings"
+      parameters:
+        - name: readings
+          in: body
+          description: reading to create
+          required: True
+          schema:
+            type: object
+            properties:
+              baro_temp:
+                type: "number"
+              baro_pressure:
+                type: "number"
+              cpu_temp:
+                type: "number"
+              humid_temp:
+                type: "number"
+              humid_humid:
+                type: "number"
+              light:
+                type: "integer"
+              time:
+                type: "number"
+      responses:
+        201:
+          description: "Successfully created record"
