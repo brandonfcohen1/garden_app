@@ -27,3 +27,4 @@ while True:
     print(read)
     r = requests.post(url, json = read)
     print(r.status_code)
+    time.sleep(60)
