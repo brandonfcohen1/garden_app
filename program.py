@@ -6,6 +6,7 @@ from sensors.humidity_sensor import *
 import requests
 import time
 
+
 #Humidity Sensor Configs
 HUMIDITY_SENSOR = 15
 
@@ -16,10 +17,21 @@ def get_all_readings():
     cpu_temp = get_cpu_temp()
     humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
     light = read_light()
-    return({'baro_temp':baro[0], 'baro_pressure': baro[1], 'cpu_temp': cpu_temp, 'humid_temp': humid[0], 'humid_humid': humid[1], 'light': light, 'time': time.time()})
+    soil_moisture = 0
+    return(
+        {'baro_temp':baro[0],
+         'baro_pressure': baro[1],
+         'cpu_temp': cpu_temp,
+         'humid_temp': humid[0],
+         'humid_humid': humid[1],
+         'light': light,
+         'time': time.time(),
+         "soil_moisture": soil_moisture
+         }
+        )
 
 
-url = 'https://cohen-garden.herokuapp.com/api/readings'
+url = 'https://cohengarden.herokuapp.com/api/add'
 
 
 while True:
