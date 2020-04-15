@@ -65,7 +65,8 @@ class DHT11:
                 checksum = self.__calculate_checksum(the_bytes)
                 if the_bytes[4] != checksum:
                         return DHT11Result(DHT11Result.ERR_CRC, 0, 0)
-                        
+                
+                    
                 # ok, we have valid data, return it
                 return DHT11Result(DHT11Result.ERR_NO_ERROR, the_bytes[2], the_bytes[0])
 

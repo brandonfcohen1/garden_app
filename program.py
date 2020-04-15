@@ -5,7 +5,7 @@ from sensors.rpio_sensors import *
 from sensors.humidity_sensor import *
 import requests
 import time
-
+import RPi.GPIO as GPIO
 
 #Humidity Sensor Configs
 HUMIDITY_SENSOR = 15
@@ -15,9 +15,10 @@ HUMIDITY_SENSOR = 15
 def get_all_readings():
     baro = read_barometric()
     cpu_temp = get_cpu_temp()
-    humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
     light = read_light()
+    humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
     soil_moisture = 0
+    GPIO.cleanup()
     return(
         {'baro_temp':baro[0],
          'baro_pressure': baro[1],
@@ -39,4 +40,4 @@ while True:
     print(read)
     r = requests.post(url, json = read)
     print(r.status_code)
-    time.sleep(60)
+    time.sleep(5)

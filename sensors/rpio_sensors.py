@@ -3,13 +3,12 @@ import RPi.GPIO as GPIO
 #GPIO Ports
 LIGHT_SENSOR = 14
 
-#GPIO Setup
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(LIGHT_SENSOR, GPIO.IN)
-
 
 
 def read_light():
+    #GPIO Setup
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(LIGHT_SENSOR, GPIO.IN)
     return(GPIO.input(LIGHT_SENSOR))
 
 
