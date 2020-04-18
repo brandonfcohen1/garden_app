@@ -17,14 +17,18 @@ def get_all_readings():
     cpu_temp = get_cpu_temp()
     light = read_light()
     humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
+    if humid[0]==32.0:
+        time.sleep(3)
+        #If reading fails, try one more time
+        humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
     soil_moisture = 0
     GPIO.cleanup()
     return(
-        {'baro_temp':baro[0],
-         'baro_pressure': baro[1],
-         'cpu_temp': cpu_temp,
-         'humid_temp': humid[0],
-         'humid_humid': humid[1],
+        {'baro_temp': round(baro[0],2),
+         'baro_pressure': round(baro[1],2),
+         'cpu_temp': round(cpu_temp,2),
+         'humid_temp': round(humid[0],2),
+         'humid_humid': round(humid[1],2),
          'light': light,
          'time': time.time(),
          "soil_moisture": soil_moisture
@@ -40,4 +44,4 @@ while True:
     print(read)
     r = requests.post(url, json = read)
     print(r.status_code)
-    time.sleep(5)
+    time.sleep(60)
