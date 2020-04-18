@@ -3,9 +3,11 @@ from sensors.barometric_sensor import *
 from sensors.cpu_temp import *
 from sensors.rpio_sensors import *
 from sensors.humidity_sensor import *
+from sensors.mcp3008 import *
 import requests
 import time
 import RPi.GPIO as GPIO
+
 
 #Humidity Sensor Configs
 HUMIDITY_SENSOR = 15
@@ -21,7 +23,9 @@ def get_all_readings():
         time.sleep(3)
         #If reading fails, try one more time
         humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
-    soil_moisture = 0
+    soil_moisture = read_mcp3008(0)
+    water_level = read_mcp3008(1)
+    pump_status = 0
     GPIO.cleanup()
     return(
         {'baro_temp': round(baro[0],2),
@@ -31,7 +35,9 @@ def get_all_readings():
          'humid_humid': round(humid[1],2),
          'light': light,
          'time': time.time(),
-         "soil_moisture": soil_moisture
+         "soil_moisture": soil_moisture,
+         "water_level": water_level,
+         "pump_status": pump_status
          }
         )
 
@@ -42,6 +48,11 @@ url = 'https://cohengarden.herokuapp.com/api/add'
 while True:
     read = get_all_readings()
     print(read)
-    r = requests.post(url, json = read)
-    print(r.status_code)
+    
+    try:
+        r = requests.post(url, json = read)
+        print(r.status_code)
+    except:
+        print('post failed at ' + str(time.time()))
+        
     time.sleep(60)
