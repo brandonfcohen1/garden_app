@@ -27,4 +27,9 @@ def output_readings():
         time.sleep(0.5)
 
 def read_mcp3008(channel):
+    CLK  = 18
+    MISO = 23
+    MOSI = 24
+    CS   = 25
+    mcp = Adafruit_MCP3008.MCP3008(clk=CLK, cs=CS, miso=MISO, mosi=MOSI)
     return(mcp.read_adc(channel))

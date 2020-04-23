@@ -15,7 +15,16 @@ HUMIDITY_SENSOR = 15
 
 
 def get_all_readings():
-    baro = read_barometric()
+    
+    #Baro sensor needs to be soldered- sometimes the connection gets loose and it doesn't fire
+    #in that case, use the previous reading. This code needs to be improved.
+    try:
+        baro = read_barometric()
+    except:
+        x = requests.get('https://cohengarden.herokuapp.com/last/1').json()
+        baro = [x[0]['baro_temp'],x[0]['baro_pressure']]
+        print('Baro reading failed')
+        
     cpu_temp = get_cpu_temp()
     light = read_light()
     humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
@@ -55,4 +64,4 @@ while True:
     except:
         print('post failed at ' + str(time.time()))
         
-    time.sleep(60)
+    time.sleep(60*5)
