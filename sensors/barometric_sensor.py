@@ -115,23 +115,17 @@ def readBmp180(addr=DEVICE):
 
   return (temperature/10.0,pressure/100.0)
 
-#def main():
-#    
-#  (chip_id, chip_version) = readBmp180Id()
-#  print("Chip ID     : {0}".format(chip_id))
-#  print("Version     : {0}".format(chip_version))
-#
-#  print
-#  
-#  (temperature,pressure)=readBmp180()
-#  print("Temperature : {0} C".format(temperature))
-#  print("Pressure    : {0} mbar".format(pressure))
-#  
-#if __name__=="__main__":
-#   main()
+
 
 def read_barometric():
-    (deg_C, mbar) = readBmp180()
-    deg_F = deg_C*(9.0/5.0)+32.0
-    mmhg = mbar * 0.02953
+    # Put the reading in a try-except in case the connections are loose.
+    try:
+        (deg_C, mbar) = readBmp180()
+        deg_F = deg_C*(9.0/5.0)+32.0
+        mmhg = mbar * 0.02953
+    except:
+        deg_F = 0
+        mmhg = 0
+        print("Barometric reading failed")
+
     return (deg_F, mmhg)

@@ -1,41 +1,44 @@
 import time
-from sensors.barometric_sensor import *
-from sensors.cpu_temp import *
-from sensors.rpio_sensors import *
-from sensors.humidity_sensor import *
-from sensors.mcp3008 import *
 import requests
-import time
 import RPi.GPIO as GPIO
+import sensors.barometric_sensor
+import sensors.cpu_temp
+import sensors.rpio_sensors
+import sensors.humidity_sensor
+import sensors.mcp3008
 
 
-#Humidity Sensor Configs
+#Sensor Configs
 HUMIDITY_SENSOR = 15
+LIGHT_SENSOR = 14
 
+
+#Program Configs
+READING_FREQUENCY = 60*5
+DRY_SOIL_BENCHMARK = 800     #This is experimentally determined and should be tweaked over time
 
 
 def get_all_readings():
     
-    #Baro sensor needs to be soldered- sometimes the connection gets loose and it doesn't fire
-    #in that case, use the previous reading. This code needs to be improved.
-    try:
-        baro = read_barometric()
-    except:
-        x = requests.get('https://cohengarden.herokuapp.com/last/1').json()
-        baro = [x[0]['baro_temp'],x[0]['baro_pressure']]
-        print('Baro reading failed')
-        
-    cpu_temp = get_cpu_temp()
-    light = read_light()
-    humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
-    if humid[0]==32.0:
-        time.sleep(3)
-        #If reading fails, try one more time
-        humid = DHT11(pin = HUMIDITY_SENSOR).read().return_results()
-    soil_moisture = read_mcp3008(0)
-    water_level = read_mcp3008(1)
+    #The DHT11 sensor often fails. If this happens, try two more times before giving up and skipping the reading.
+    humid = 32.0,0.0
+    k=0
+    while (humid[0] == 32.0) and (k < 3):
+        humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
+        k+=1
+     
+    baro = barometric_sensor.read_barometric()
+    cpu_temp = cpu_temp.get_cpu_temp()
+    light = rpio_sensors.read_light()
+    
+    
+    soil_moisture = mcp3008.read_mcp3008(0)
+    water_level = mcp3008.read_mcp3008(1)
     pump_status = 0
+    
+    #Clean up GPIO board
     GPIO.cleanup()
+    
     return(
         {'baro_temp': round(baro[0],2),
          'baro_pressure': round(baro[1],2),
@@ -64,4 +67,4 @@ while True:
     except:
         print('post failed at ' + str(time.time()))
         
-    time.sleep(60*5)
+    time.sleep(READING_FREQUENCY)
