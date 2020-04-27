@@ -1,8 +1,5 @@
 import RPi.GPIO as GPIO
 
-#GPIO Ports
-
-
 
 #Light Sensor
 def read_light(LIGHT_SENSOR):
@@ -15,7 +12,7 @@ def read_light(LIGHT_SENSOR):
 def get_touch_input(TOUCH_SENSOR):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(TOUCH_SENSOR, GPIO.IN)
-    return GPIO.input(TOUCH_SENSOR)
+    return (GPIO.input(TOUCH_SENSOR))
 
 
 #Relay Pump (relay must be on 3.3v)
@@ -29,7 +26,6 @@ def pump_off(RELAY_SWITCH):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(RELAY_SWITCH, GPIO.OUT)
     GPIO.output(RELAY_SWITCH,1)
-
 
 
 

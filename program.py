@@ -12,7 +12,7 @@ from signal import pause
 # Sensor Configs
 HUMIDITY_SENSOR = 15
 LIGHT_SENSOR = 14
-TOUCH_SENSOR = 21
+TOUCH_SENSOR = 27
 RELAY_SWITCH = 17
 
 # Program Configs

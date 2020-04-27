@@ -33,3 +33,4 @@ def read_mcp3008(channel):
     CS   = 25
     mcp = Adafruit_MCP3008.MCP3008(clk=CLK, cs=CS, miso=MISO, mosi=MOSI)
     return(mcp.read_adc(channel))
+
