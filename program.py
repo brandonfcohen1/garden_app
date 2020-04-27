@@ -19,7 +19,7 @@ RELAY_SWITCH = 17
 READING_FREQUENCY = 60*5          # Frequency with which to collect data, in seconds.
 TOUCH_SENSOR_CHECK_FREQUENCY = 10 # Frequency with which to check if the touch sensor has been pressed
 DRY_SOIL_BENCHMARK = 800          # This is experimentally determined and should be tweaked over time
-MAX_WATER_LEVEL = 668             # This is what the water sensor reads when the water is full
+MAX_WATER_LEVEL = 758             # This is what the water sensor reads when the water is full
 MIN_WATER_LEVEL = 249             # This is what the water sensor reads when the water is empty
 LONG_PUMP_RUN = 1                 # How long to run the pump for (in seconds) when the soil is dry
 SHORT_PUMP_RUN = 0.5              # How long to run the pump for (in seconds) when the touch sensor is pressed
@@ -62,7 +62,7 @@ def get_all_readings():
          'light': light,
          'time': time.time(),
          "soil_moisture": soil_moisture,
-         "water_level": water_level,
+         "water_level": round(water_level,2)*100,
          "pump_status": pump_status
          }
         )
