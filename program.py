@@ -32,14 +32,16 @@ if READING_FREQUENCY % TOUCH_SENSOR_CHECK_FREQUENCY != 0:
 
 def get_all_readings():
     
-    # The DHT11 sensor often fails. If this happens, try 3 more times before giving up and skipping the reading.
+     # The DHT11 sensor often fails. If this happens, try 3 more times before giving up and skipping the reading.
     humid = 32.0,0.0
     k=0
     while (humid[0] == 32.0) and (k < 4):
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
-        GPIO.cleanup()
+        time.sleep(.2)
         k+=1
-     
+    #GPIO.cleanup()
+    print(humid)
+
     baro = barometric_sensor.read_barometric()
     cpu_t = cpu_temp.get_cpu_temp()
     light = rpio_sensors.read_light(LIGHT_SENSOR)
@@ -109,5 +111,5 @@ while True:
         print(r.status_code)
     except:
         print('post failed at ' + str(time.time()))
-        
+
     
