@@ -37,6 +37,7 @@ def get_all_readings():
     k=0
     while (humid[0] == 32.0) and (k < 4):
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
+        GPIO.cleanup()
         k+=1
      
     baro = barometric_sensor.read_barometric()
