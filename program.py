@@ -16,13 +16,13 @@ TOUCH_SENSOR = 27
 RELAY_SWITCH = 17
 
 # Program Configs
-READING_FREQUENCY = 60*5          # Frequency with which to collect data, in seconds.
-TOUCH_SENSOR_CHECK_FREQUENCY = 10 # Frequency with which to check if the touch sensor has been pressed
-DRY_SOIL_BENCHMARK = 800          # This is experimentally determined and should be tweaked over time
-MAX_WATER_LEVEL = 758             # This is what the water sensor reads when the water is full
-MIN_WATER_LEVEL = 249             # This is what the water sensor reads when the water is empty
-LONG_PUMP_RUN = 1                 # How long to run the pump for (in seconds) when the soil is dry
-SHORT_PUMP_RUN = 0.5              # How long to run the pump for (in seconds) when the touch sensor is pressed
+READING_FREQUENCY = 60*5            # Frequency with which to collect data, in seconds
+TOUCH_SENSOR_CHECK_FREQUENCY = 10   # Frequency with which to check if the touch sensor has been pressed
+DRY_SOIL_BENCHMARK = 800            # This is experimentally determined and should be tweaked over time
+MAX_WATER_LEVEL = 758               # This is what the water sensor reads when the water is full
+MIN_WATER_LEVEL = 249               # This is what the water sensor reads when the water is empty
+LONG_PUMP_RUN = 1                   # How long to run the pump for (in seconds) when the soil is dry
+SHORT_PUMP_RUN = 0.5                # How long to run the pump for (in seconds) when the touch sensor is pressed
 POST_URL = 'https://cohengarden.herokuapp.com/api/add'
 
 # READING_FREQUENCY must be divisible by TOUCH_SENSOR_CHECK_FREQUENCY
@@ -32,10 +32,10 @@ if READING_FREQUENCY % TOUCH_SENSOR_CHECK_FREQUENCY != 0:
 
 def get_all_readings():
     
-    # The DHT11 sensor often fails. If this happens, try two more times before giving up and skipping the reading.
+    # The DHT11 sensor often fails. If this happens, try 3 more times before giving up and skipping the reading.
     humid = 32.0,0.0
     k=0
-    while (humid[0] == 32.0) and (k < 3):
+    while (humid[0] == 32.0) and (k < 4):
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
         k+=1
      
@@ -74,18 +74,20 @@ while True:
     read = get_all_readings()
     print(read)
     
-    # If the soil moisture is above the benchmark (drier), run the pump for 1 second.
+    # If the soil moisture is above the benchmark (drier), run the pump for LONG_PUMP_RUN second.
     # I am worried about a lag in the moisture sensor picking up the change in moisture content and I don't want to over-water.
     # Therefore, I only want the program to water once per day, which will be checked for using the "last_run" variable
     if (time.time() - last_run > 60*60*24) and (read["soil_moisture"] > DRY_SOIL_BENCHMARK):
         rpio_sensors.pump_on(RELAY_SWITCH)
-        time.sleep(1)
+        time.sleep(LONG_PUMP_RUN)
         rpio_sensors.pump_off(RELAY_SWITCH)
         read["pump_status"] = 1 #Set the pump status to ON during this interval
         last_run = time.time() #Set the last time the pump was run
+        time.sleep(TOUCH_SENSOR_CHECK_FREQUENCY - LONG_PUMP_RUN)
+        GPIO.cleanup()
     
     # I also want the ability to manually run the pump using the touch sensor
-    # Every 10 seconds the program will check to see if the touch sensor has been pressed
+    # Every TOUCH_SENSOR_CHECK_FREQUENCY seconds the program will check to see if the touch sensor has been pressed
     # If it has (regardless of when the pump was last run), run the pump for SHORT_PUMP_RUN seconds
     for i in range(0,int(READING_FREQUENCY/TOUCH_SENSOR_CHECK_FREQUENCY)):
         p = rpio_sensors.get_touch_input(TOUCH_SENSOR)
@@ -95,8 +97,11 @@ while True:
             rpio_sensors.pump_off(RELAY_SWITCH)
             read["pump_status"] = 1
             time.sleep(TOUCH_SENSOR_CHECK_FREQUENCY - SHORT_PUMP_RUN)
+            GPIO.cleanup()
         else:
             time.sleep(TOUCH_SENSOR_CHECK_FREQUENCY)
+    
+
     
     try:
         r = requests.post(POST_URL, json = read)
