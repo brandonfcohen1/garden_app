@@ -39,13 +39,10 @@ def get_all_readings():
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
         time.sleep(.2)
         k+=1
-    #GPIO.cleanup()
-    print(humid)
 
     baro = barometric_sensor.read_barometric()
     cpu_t = cpu_temp.get_cpu_temp()
     light = rpio_sensors.read_light(LIGHT_SENSOR)
-    
     
     soil_moisture = mcp3008.read_mcp3008(0)
     water_level = (mcp3008.read_mcp3008(1) - MIN_WATER_LEVEL)/(MAX_WATER_LEVEL - MIN_WATER_LEVEL) 
