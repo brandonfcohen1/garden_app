@@ -20,7 +20,7 @@ READING_FREQUENCY = 60*5            # Frequency with which to collect data, in s
 TOUCH_SENSOR_CHECK_FREQUENCY = 10   # Frequency with which to check if the touch sensor has been pressed
 DRY_SOIL_BENCHMARK = 800            # This is experimentally determined and should be tweaked over time
 MAX_WATER_LEVEL = 758               # This is what the water sensor reads when the water is full
-MIN_WATER_LEVEL = 249               # This is what the water sensor reads when the water is empty
+MIN_WATER_LEVEL = 650               # This is what the water sensor reads when the water is empty
 LONG_PUMP_RUN = 1                   # How long to run the pump for (in seconds) when the soil is dry
 SHORT_PUMP_RUN = 0.5                # How long to run the pump for (in seconds) when the touch sensor is pressed
 POST_URL = 'https://cohengarden.herokuapp.com/api/add'
@@ -37,7 +37,7 @@ def get_all_readings():
     k=0
     while (humid[0] == 32.0) and (k < 5):
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
-        time.sleep(.2)
+        time.sleep(.3)
         k+=1
 
     baro = barometric_sensor.read_barometric()
@@ -46,7 +46,7 @@ def get_all_readings():
     
     soil_moisture = mcp3008.read_mcp3008(0)
     water_level = (mcp3008.read_mcp3008(1) - MIN_WATER_LEVEL)/(MAX_WATER_LEVEL - MIN_WATER_LEVEL) 
-    
+
     # Pump status will be set during program run
     pump_status = 0
     
@@ -72,11 +72,8 @@ def get_all_readings():
 last_run = 0 #Initialize this variable which will store the last time the pump was on
 while True:
     read = get_all_readings()
-    print(read)
+    print(read)   
     
-    time.sleep(1)
-    
-    '''
     # If the soil moisture is above the benchmark (drier), run the pump for LONG_PUMP_RUN second.
     # I am worried about a lag in the moisture sensor picking up the change in moisture content and I don't want to over-water.
     # Therefore, I only want the program to water once per day, which will be checked for using the "last_run" variable
@@ -104,13 +101,12 @@ while True:
         else:
             time.sleep(TOUCH_SENSOR_CHECK_FREQUENCY)
     
-
-    
+   
     try:
         r = requests.post(POST_URL, json = read)
         print(r.status_code)
     except:
         print('post failed at ' + str(time.time()))
-    '''
+    
     
     
