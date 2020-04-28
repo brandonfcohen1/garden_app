@@ -32,10 +32,10 @@ if READING_FREQUENCY % TOUCH_SENSOR_CHECK_FREQUENCY != 0:
 
 def get_all_readings():
     
-     # The DHT11 sensor often fails. If this happens, try 3 more times before giving up and skipping the reading.
+     # The DHT11 sensor often fails. If this happens, try 5 more times before giving up and skipping the reading.
     humid = 32.0,0.0
     k=0
-    while (humid[0] == 32.0) and (k < 4):
+    while (humid[0] == 32.0) and (k < 5):
         humid = humidity_sensor.DHT11(pin = HUMIDITY_SENSOR).read().return_results()
         time.sleep(.2)
         k+=1
@@ -74,6 +74,9 @@ while True:
     read = get_all_readings()
     print(read)
     
+    time.sleep(1)
+    
+    '''
     # If the soil moisture is above the benchmark (drier), run the pump for LONG_PUMP_RUN second.
     # I am worried about a lag in the moisture sensor picking up the change in moisture content and I don't want to over-water.
     # Therefore, I only want the program to water once per day, which will be checked for using the "last_run" variable
@@ -108,5 +111,6 @@ while True:
         print(r.status_code)
     except:
         print('post failed at ' + str(time.time()))
-
+    '''
+    
     
