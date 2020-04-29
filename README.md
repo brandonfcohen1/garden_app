@@ -8,6 +8,8 @@ Also during quarantine, I wanted to beef up my web development skills, so built 
 
 The code for the app which manages the garden can be found <a href="https://github.com/brandonfcohen1/garden_app" target="_blank">here</a> on GitHub.
 
+The dashboard for the web app can be found <a href="http://cohengarden.herokuapp.com/">here</a>.
+
 
 
 The main script which I keep constantly running is called program.py. 
