@@ -21,7 +21,7 @@ TOUCH_SENSOR_CHECK_FREQUENCY = 10   # Frequency with which to check if the touch
 DRY_SOIL_BENCHMARK = 680            # This is experimentally determined and should be tweaked over time
 MAX_WATER_LEVEL = 758               # This is what the water sensor reads when the water is full
 MIN_WATER_LEVEL = 550               # This is what the water sensor reads when the water is empty
-LONG_PUMP_RUN = 2                   # How long to run the pump for (in seconds) when the soil is dry
+LONG_PUMP_RUN = 1.5                   # How long to run the pump for (in seconds) when the soil is dry
 SHORT_PUMP_RUN = 1                  # How long to run the pump for (in seconds) when the touch sensor is pressed
 POST_URL = 'https://cohengarden.herokuapp.com/api/add'
 
@@ -77,7 +77,7 @@ while True:
     # If the soil moisture is above the benchmark (drier), run the pump for LONG_PUMP_RUN second.
     # I am worried about a lag in the moisture sensor picking up the change in moisture content and I don't want to over-water.
     # Therefore, I only want the program to water once per 12 hours, which will be checked for using the "last_run" variable
-    if (time.time() - last_run > 60*60*24/2) and (read["soil_moisture"] > DRY_SOIL_BENCHMARK):
+    if (time.time() - last_run > 60*60*24) and (read["soil_moisture"] > DRY_SOIL_BENCHMARK):
         rpio_sensors.pump_on(RELAY_SWITCH)
         time.sleep(LONG_PUMP_RUN)
         rpio_sensors.pump_off(RELAY_SWITCH)
